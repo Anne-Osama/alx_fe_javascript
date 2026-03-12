@@ -1,1 +1,33 @@
+const quotes = [
+  { text: "The best way to get started is to quit talking and begin doing.", category: "Motivation" },
+  { text: "Life is what happens when you're busy making other plans.", category: "Life" },
+  { text: "Do not let making a living prevent you from making a life.", category: "Life" }
+];
 
+const quoteDisplay = document.getElementById("quoteDisplay");
+const newQuoteBtn = document.getElementById("newQuote");
+
+function showRandomQuote() {
+  const randomIndex = Math.floor(Math.random() * quotes.length);
+  const quote = quotes[randomIndex];
+  quoteDisplay.textContent = `"${quote.text}" — ${quote.category}`;
+}
+
+function addQuote() {
+  const textInput = document.getElementById("newQuoteText");
+  const categoryInput = document.getElementById("newQuoteCategory");
+  
+  if (textInput.value && categoryInput.value) {
+    quotes.push({ text: textInput.value, category: categoryInput.value });
+    textInput.value = "";
+    categoryInput.value = "";
+    showRandomQuote();
+  } else {
+    alert("Please enter both quote and category.");
+  }
+}
+
+newQuoteBtn.addEventListener("click", showRandomQuote);
+
+
+showRandomQuote();
