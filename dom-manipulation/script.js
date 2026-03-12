@@ -1,18 +1,215 @@
-// تحميل الاقتباسات من localStorage أو استخدام بيانات افتراضية
-let quotes = JSON.parse(localStorage.getItem("quotes")) || [
-  { text: "The only way to do great work is to love what you do.", category: "Motivation" },
-  { text: "Life is what happens when you're busy making other plans.", category: "Life" },
-  { text: "Success usually comes to those who are too busy to be looking for it.", category: "Success" }
+/*const quotes = [
+  {
+    text: "The journey of a thousand miles begins with one step.",
+    category: "Motivation",
+  },
+  {
+    text: "To be yourself in a world that is constantly trying to make you something else is the greatest accomplishment.",
+    category: "Individuality",
+  },
+  {
+    text: "Life is what happens when you're busy making other plans.",
+    category: "Life",
+  },
+  { text: "The will of man is his happiness.", category: "happiness" },
+  {
+    text: "All improv turns into anger. All comedy improv basically turns into anger, because that's all people know how to do when they're improvising. If you notice shows that are improvising are generally people yelling at each other.",
+    category: "anger",
+  },
+  {
+    text: "Reason is an action of the mind knowledge is a possession of the mind but faith is an attitude of the person. It means you are prepared to stake yourself on something being so.",
+    category: "attitude",
+  },
+];*/
+
+/*function showRandomQuote() {
+  const randomIndex = Math.floor(Math.random() * quotes.length);
+  const quoteDisplay = document.getElementById("quoteDisplay");
+  const quote = quotes[randomIndex];
+  quoteDisplay.innerHTML = `<p>${quote.text}</p><p>category: ${quote.category}</p>`;
+}
+function createAddQuoteForm(quoteText, quoteCategory) {
+  if (quoteText && quoteCategory) {
+    quotes.push({ text: quoteText, category: quoteCategory });
+    document.getElementById("newQuoteText").value = "";
+    document.getElementById("newQuoteCategory").value = "";
+    const newDiv = document.createElement("div");
+    const newContent = document.createTextNode("Hi there and greetings!");
+    newDiv.appendChild(newContent);
+    alert("New quote added !");
+  } else {
+    alert("please add a quote.");
+  }
+}
+
+function addQuote() {
+  const quoteText = document.getElementById("newQuoteText").value.trim();
+  const quoteCategory = document
+    .getElementById("newQuoteCategory")
+    .value.trim();
+
+  createAddQuoteForm(quoteText, quoteCategory);
+}
+document.addEventListener("DOMContentLoaded", function () {
+  document
+    .getElementById("newQuote")
+    .addEventListener("click", showRandomQuote);
+});*/
+
+let container = document.getElementById("quoteDisplay");
+let btn = document.getElementById("newQuote");
+
+let quoteArray = [
+  {
+    text: "The journey of a thousand miles begins with one step.",
+    category: "Motivation",
+  },
+  {
+    text: "To be yourself in a world that is constantly trying to make you something else is the greatest accomplishment.",
+    category: "Individuality",
+  },
+  {
+    text: "Life is what happens when you're busy making other plans.",
+    category: "Life",
+  },
+  { text: "The will of man is his happiness.", category: "happiness" },
+  {
+    text: "All improv turns into anger. All comedy improv basically turns into anger, because that's all people know how to do when they're improvising. If you notice shows that are improvising are generally people yelling at each other.",
+    category: "anger",
+  },
+  {
+    text: "Reason is an action of the mind knowledge is a possession of the mind but faith is an attitude of the person. It means you are prepared to stake yourself on something being so.",
+    category: "attitude",
+  },
 ];
 
-// دالة إنشاء الفئات للقائمة
+// Function to show a random quote from the array
+function showRandomQuote() {
+  let randomNum = Math.floor(Math.random() * quoteArray.length);
+  container.innerHTML = `"${quoteArray[randomNum].text}" - ${quoteArray[randomNum].category}`;
+}
+
+// Ensure event listener is added
+btn.addEventListener("click", showRandomQuote);
+
+// Function to show a random quote
+function showRandomQuote() {
+  const randomNum = Math.floor(Math.random() * quoteArray.length);
+  container.innerHTML = `'${quoteArray[randomNum].text}' '${quoteArray[randomNum].category}'`;
+}
+
+// Creating the Add Quote Form
+function createAddQuoteForm() {
+  let container = document.createElement("div");
+  container.id = "quoteForm";
+
+  let inputText = document.createElement("input");
+  inputText.id = "newQuoteText";
+  inputText.type = "text";
+  inputText.placeholder = "Enter a new quote";
+
+  let inputCategory = document.createElement("input");
+  inputCategory.id = "newQuoteCategory";
+  inputCategory.type = "text";
+  inputCategory.placeholder = "Enter quote category";
+
+  let addQBtn = document.createElement("button");
+  addQBtn.id = "addQuoteButton";
+  addQBtn.textContent = "Add Quote";
+
+  container.appendChild(inputText);
+  container.appendChild(inputCategory);
+  container.appendChild(addQBtn);
+  document.body.appendChild(container);
+
+  // Applying the addFunction to the Button
+  addQBtn.addEventListener("click", addQuote);
+}
+
+// Save Quotes in Local Storage
+function saveQuotes() {
+  localStorage.setItem("quotes", JSON.stringify(quoteArray));
+}
+
+// Load Quotes from Local Storage
+function loadQuotes() {
+  let savedQuotes = localStorage.getItem("quotes");
+  if (savedQuotes) {
+    quoteArray = JSON.parse(savedQuotes);
+  }
+}
+
+// Function to add a Quote to the array
+function addQuote() {
+  let inQuote = document.getElementById("newQuoteText").value;
+  let inCategory = document.getElementById("newQuoteCategory").value;
+
+  if (inQuote && inCategory) {
+    // Add the new quote to the array
+    quoteArray.push({ text: inQuote, category: inCategory });
+
+    // Save the updated quotes to local storage
+    saveQuotes();
+
+    // Clear the input fields
+    document.getElementById("newQuoteText").value = "";
+    document.getElementById("newQuoteCategory").value = "";
+
+    // Alert the user
+    alert("You successfully added a new quote!");
+
+    // Update the category dropdown with the new category
+    populateCategories();
+  } else {
+    alert("You must fill in both the Quote and Category fields.");
+  }
+}
+
+// Function to export quotes as JSON
+function exportToJsonFile() {
+  const dataStr = JSON.stringify(quoteArray, null, 2);
+  const blob = new Blob([dataStr], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+
+  // Create a download link
+  const downloadLink = document.createElement("a");
+  downloadLink.href = url;
+  downloadLink.download = "quotes.json";
+  document.body.appendChild(downloadLink);
+  downloadLink.click();
+  document.body.removeChild(downloadLink);
+}
+
+// Add file input for importing JSON
+const importInput = document.getElementById("importFile");
+
+importInput?.addEventListener("change", function (event) {
+  const fileReader = new FileReader();
+
+  fileReader.onload = function (event) {
+    try {
+      const importQuotes = JSON.parse(event.target.result);
+      quoteArray.push(...importQuotes);
+      saveQuotes();
+      alert("Quotes imported successfully!");
+    } catch (error) {
+      alert("Error importing quotes: Invalid JSON format.");
+    }
+  };
+
+  fileReader.readAsText(event.target.files[0]);
+});
+
+// Populate the category filter dropdown with unique categories
 function populateCategories() {
-  const categoryFilter = document.getElementById("categoryFilter");
-  categoryFilter.innerHTML = '<option value="all">All Categories</option>';
+  let categoryFilter = document.getElementById("categoryFilter");
+  categoryFilter.innerHTML = ""; // Clear existing options
 
-  const categories = [...new Set(quotes.map(q => q.category))];
+  const uniqueCategories = [
+    ...new Set(quoteArray.map((quote) => quote.category)),
+  ];
 
-  categories.forEach(category => {
+  uniqueCategories.forEach((category) => {
     const option = document.createElement("option");
     option.value = category;
     option.textContent = category;
@@ -20,77 +217,46 @@ function populateCategories() {
   });
 }
 
-// عرض الاقتباسات
-function displayQuotes(quotesToShow) {
-  const container = document.getElementById("quotesContainer");
-  container.innerHTML = "";
-
-  quotesToShow.forEach(quote => {
-    const div = document.createElement("div");
-    div.className = "quote";
-    div.textContent = `"${quote.text}" - ${quote.category}`;
-    container.appendChild(div);
-  });
-}
-
-// فلترة الاقتباسات حسب الفئة
+// Function to filter quotes by category and display them
 function filterQuotes() {
-  const categoryFilter = document.getElementById("categoryFilter");
-  const selectedCategory = categoryFilter.value;
+  const selectedCategory = document.getElementById("categoryFilter").value;
+  const quoteDisplay = document.getElementById("quoteDisplay");
 
-  localStorage.setItem("selectedCategory", selectedCategory);
+  const filteredQuotes =
+    selectedCategory === "all"
+      ? quoteArray
+      : quoteArray.filter((quote) => quote.category === selectedCategory);
 
-  if (selectedCategory === "all") {
-    displayQuotes(quotes);
+  if (filteredQuotes.length > 0) {
+    const randomIndex = Math.floor(Math.random() * filteredQuotes.length);
+    const randomQuote = filteredQuotes[randomIndex];
+    quoteDisplay.innerHTML = `"${randomQuote.text}" - ${randomQuote.category}`;
+
+    // Save last selected category filter and last displayed quote
+    localStorage.setItem("lastFilter", selectedCategory);
+    sessionStorage.setItem("lastQuote", JSON.stringify(randomQuote));
   } else {
-    const filteredQuotes = quotes.filter(q => q.category === selectedCategory);
-    displayQuotes(filteredQuotes);
+    quoteDisplay.innerHTML = "No quotes available for this category.";
   }
 }
 
-// إضافة اقتباس جديد
-function addQuote() {
-  const text = document.getElementById("newQuoteText").value;
-  const category = document.getElementById("newQuoteCategory").value;
-
-  if (!text || !category) return;
-
-  const newQuote = { text, category };
-  quotes.push(newQuote);
-
-  localStorage.setItem("quotes", JSON.stringify(quotes));
-
-  populateCategories();
-  filterQuotes();
-
-  document.getElementById("newQuoteText").value = "";
-  document.getElementById("newQuoteCategory").value = "";
-}
-// دالة افتراضية لمحاكاة جلب الاقتباسات من السيرفر
-function fetchQuotesFromServer() {
-  // في الواقع، نحن نستخدم localStorage أو بيانات افتراضية
-  return quotes;
-}
-document.addEventListener("DOMContentLoaded", () => {
-  quotes = fetchQuotesFromServer(); // جلب الاقتباسات "من السيرفر"
-  populateCategories();
-
-  const savedCategory = localStorage.getItem("selectedCategory");
-  if (savedCategory) {
-    document.getElementById("categoryFilter").value = savedCategory;
+// Load last selected category filter from local storage
+function loadLastFilter() {
+  const lastFilter = localStorage.getItem("lastFilter");
+  if (lastFilter) {
+    document.getElementById("categoryFilter").value = lastFilter;
+    filterQuotes(); // Apply the last selected filter
   }
+}
 
-  filterQuotes();
-});
+// Initialize
+loadQuotes();
+populateCategories();
+loadLastFilter();
+createAddQuoteForm();
 
-// عند تحميل الصفحة
-document.addEventListener("DOMContentLoaded", () => {
-  populateCategories();
-
-  const savedCategory = localStorage.getItem("selectedCategory");
-  if (savedCategory) {
-    document.getElementById("categoryFilter").value = savedCategory;
-  }
-
-  filterQuotes();
-});
+if (btn) {
+  btn.addEventListener("click", showRandomQuote);
+} else {
+  console.error("Button with id 'newQuote' not found!");
+}
